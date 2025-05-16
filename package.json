@@ -1,0 +1,19 @@
+{
+  "name": "birthdayservice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "joi": "^17.13.3",
+    "moment-timezone": "^0.5.48",
+    "mongoose": "^8.14.3",
+    "nodemon": "^3.1.10"
+  }
+}

@@ -6,7 +6,7 @@ const {
   successResponse,
 } = require("../utils/response-template");
 
-module.exports.CreateUser = async (req, res) => {
+module.exports.createUser = async (req, res) => {
   try {
     const body = req.body;
 
@@ -28,7 +28,7 @@ module.exports.CreateUser = async (req, res) => {
   }
 };
 
-module.exports.GetUserById = async (req, res) => {
+module.exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await UserModel.findById(id);
@@ -41,7 +41,7 @@ module.exports.GetUserById = async (req, res) => {
   }
 };
 
-module.exports.UpdateUserById = async (req, res) => {
+module.exports.updateUserById = async (req, res) => {
   try {
     const body = req.body;
     const { id } = req.params;
@@ -68,7 +68,7 @@ module.exports.UpdateUserById = async (req, res) => {
   }
 };
 
-module.exports.DeleteUserById = async (req, res) => {
+module.exports.deleteUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await UserModel.findByIdAndDelete(id);

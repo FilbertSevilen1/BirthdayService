@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: birthday-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user1
+      MONGO_INITDB_ROOT_PASSWORD: zbCQ7MhNS2r5Uiw7
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    container_name: birthday-app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://user1:zbCQ7MhNS2r5Uiw7@mongo:27017/birthday_service?authSource=admin
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:

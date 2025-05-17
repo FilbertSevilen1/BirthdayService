@@ -1,6 +1,6 @@
 const UserModel = require("../models/User");
 
-const { createUserSchema } = require("../helpers/schema-validation");
+const { createUserSchema } = require("../helpers/schema-validation.js");
 const {
   errorResponse,
   successResponse,
@@ -60,7 +60,7 @@ module.exports.UpdateUserById = async (req, res) => {
       }
     );
     if (!updatedUser) {
-      return errorResponse(res, 404, users, "User not Found");
+      return errorResponse(res, 404, updatedUser, "User not Found");
     }
     return successResponse(res, {}, "Update User Success");
   } catch (err) {

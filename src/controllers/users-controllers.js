@@ -22,7 +22,7 @@ module.exports.CreateUser = async (req, res) => {
     });
 
     await newUser.save();
-    return successResponse(res, {}, "Create User Success");
+    return successResponse(res, {id: newUser._id}, "Create User Success");
   } catch (err) {
     return errorResponse(res, 400, {}, err.message);
   }

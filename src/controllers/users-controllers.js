@@ -80,12 +80,3 @@ module.exports.DeleteUserById = async (req, res) => {
     return errorResponse(res, 400, {}, err.message);
   }
 };
-
-module.exports.SendBirthdayMessage = async () => {
-  try{
-
-  }
-  catch (err) {
-    console.log(err)
-  }
-}

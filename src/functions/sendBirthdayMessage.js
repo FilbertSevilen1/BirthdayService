@@ -1,10 +1,31 @@
 const UserModel = require("../models/User");
 const { DateTime } = require("luxon");
+
 module.exports.SendBirthdayMessage = async () => {
   try {
-    const users = await UserModel.find({});
-
     const nowUTC = DateTime.utc();
+
+    const possibleDays = [
+      nowUTC,
+      nowUTC.minus({ days: 1 }),
+      nowUTC.plus({ days: 1 }),
+    ];
+
+    const possibleMonthDays = possibleDays.map(dt => ({
+      month: dt.month,
+      day: dt.day,
+    }));
+
+    const users = await UserModel.find({
+      $expr: {
+        $or: possibleMonthDays.map(({ month, day }) => ({
+          $and: [
+            { $eq: [{ $month: "$birthday" }, month] },
+            { $eq: [{ $dayOfMonth: "$birthday" }, day] },
+          ],
+        })),
+      },
+    });
 
     for (const user of users) {
       const userTime = nowUTC.setZone(user.timezone);

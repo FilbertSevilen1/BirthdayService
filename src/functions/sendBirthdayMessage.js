@@ -36,7 +36,7 @@ module.exports.sendBirthdayMessage = async () => {
 
       if (isBirthday && isNineAM) {
         console.log(
-          `Happy Birthday to ${user.name} (${user.email}) - Timezone: ${user.timezone}`
+          `Happy Birthday to ${user.name} (${user.email})`
         );
       }
     }

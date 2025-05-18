@@ -1,7 +1,7 @@
 const UserModel = require("../models/User");
 const { DateTime } = require("luxon");
 
-module.exports.SendBirthdayMessage = async () => {
+module.exports.sendBirthdayMessage = async () => {
   try {
     const nowUTC = DateTime.utc();
 
@@ -11,7 +11,7 @@ module.exports.SendBirthdayMessage = async () => {
       nowUTC.plus({ days: 1 }),
     ];
 
-    const possibleMonthDays = possibleDays.map(dt => ({
+    const possibleMonthDays = possibleDays.map((dt) => ({
       month: dt.month,
       day: dt.day,
     }));

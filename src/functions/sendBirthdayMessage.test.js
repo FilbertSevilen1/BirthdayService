@@ -1,10 +1,10 @@
-const { SendBirthdayMessage } = require("./sendBirthdayMessage");
+const { sendBirthdayMessage } = require("./sendBirthdayMessage");
 const UserModel = require("../models/User");
 const { DateTime } = require("luxon");
 
 jest.mock("../models/User");
 
-describe("SendBirthdayMessage", () => {
+describe("sendBirthdayMessage", () => {
   let consoleLogSpy;
   let consoleErrorSpy;
 
@@ -36,7 +36,7 @@ describe("SendBirthdayMessage", () => {
       },
     ]);
 
-    await SendBirthdayMessage();
+    await sendBirthdayMessage();
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining("Happy Birthday to Kei (kei@example.com)")
@@ -60,14 +60,14 @@ describe("SendBirthdayMessage", () => {
       },
     ]);
 
-    await SendBirthdayMessage();
+    await sendBirthdayMessage();
 
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
   it("should log an error if database query fails", async () => {
     UserModel.find.mockRejectedValue(new Error("DB error"));
-    await SendBirthdayMessage();
+    await sendBirthdayMessage();
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error sending birthday messages:",
       expect.any(Error)

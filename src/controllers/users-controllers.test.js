@@ -18,7 +18,7 @@ describe("User Controller", () => {
   describe("CreateUser", () => {
     it("should return 400 if validation fails", async () => {
       req.body = {};
-      await UserController.CreateUser(req, res);
+      await UserController.createUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalled();
     });
@@ -30,7 +30,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07",
         timezone: "Asia/Jakarta",
       };
-      await UserController.CreateUser(req, res);
+      await UserController.createUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalled();
     });
@@ -42,7 +42,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07:00",
         timezone: "Asia",
       };
-      await UserController.CreateUser(req, res);
+      await UserController.createUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalled();
     });
@@ -54,7 +54,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07:00",
         timezone: "Asia",
       };
-      await UserController.CreateUser(req, res);
+      await UserController.createUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalled();
     });
@@ -71,7 +71,7 @@ describe("User Controller", () => {
         save: jest.fn().mockResolvedValue(data),
       }));
 
-      await UserController.CreateUser(req, res);
+      await UserController.createUser(req, res);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Create User Success" })
       );
@@ -83,7 +83,7 @@ describe("User Controller", () => {
       req.params.id = "123";
       UserModel.findById.mockResolvedValue(null);
 
-      await UserController.GetUserById(req, res);
+      await UserController.getUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
@@ -92,7 +92,7 @@ describe("User Controller", () => {
       const user = { _id: "123", name: "John" };
       UserModel.findById.mockResolvedValue(user);
 
-      await UserController.GetUserById(req, res);
+      await UserController.getUserById(req, res);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           data: user,
@@ -105,7 +105,7 @@ describe("User Controller", () => {
   describe("UpdateUserById", () => {
     it("should return 400 if validation fails", async () => {
       req.body = {};
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -116,7 +116,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07:00",
         timezone: "Asia/Jakarta",
       };
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -127,7 +127,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07",
         timezone: "Asia/Jakarta",
       };
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -138,7 +138,7 @@ describe("User Controller", () => {
         birthday: "2025-10-11T00:00:00.000+07:00",
         timezone: "Asia",
       };
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -152,7 +152,7 @@ describe("User Controller", () => {
       };
       UserModel.findOneAndUpdate.mockResolvedValue(null);
 
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
@@ -166,7 +166,7 @@ describe("User Controller", () => {
       };
       UserModel.findOneAndUpdate.mockResolvedValue({ _id: req.params.id });
 
-      await UserController.UpdateUserById(req, res);
+      await UserController.updateUserById(req, res);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Update User Success" })
       );
@@ -178,7 +178,7 @@ describe("User Controller", () => {
       req.params.id = "123";
       UserModel.findByIdAndDelete.mockResolvedValue(null);
 
-      await UserController.DeleteUserById(req, res);
+      await UserController.deleteUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
@@ -192,7 +192,7 @@ describe("User Controller", () => {
       };
       UserModel.findByIdAndDelete.mockResolvedValue(user);
 
-      await UserController.DeleteUserById(req, res);
+      await UserController.deleteUserById(req, res);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           data: user,

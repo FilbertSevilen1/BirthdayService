@@ -18,7 +18,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-       MONGODB_URI: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/birthday_service?authSource=admin
+       MONGODB_URI: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@birthdayservice.gfe3aok.mongodb.net/birthday_service?retryWrites=true&w=majority&appName=BirthdayService
     depends_on:
       - mongo
     volumes:

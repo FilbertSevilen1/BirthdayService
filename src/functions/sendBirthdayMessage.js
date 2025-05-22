@@ -1,46 +1,54 @@
 const UserModel = require("../models/User");
 const { DateTime } = require("luxon");
 
-module.exports.sendBirthdayMessage = async () => {
-  try {
-    const nowUTC = DateTime.utc();
+async function sendBirthdayMessage() {
+  const maxRetries = 3;
 
-    const possibleDays = [
-      nowUTC,
-      nowUTC.minus({ days: 1 }),
-      nowUTC.plus({ days: 1 }),
-    ];
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const nowUTC = DateTime.utc();
 
-    const possibleMonthDays = possibleDays.map((dt) => ({
-      month: dt.month,
-      day: dt.day,
-    }));
+      const possibleDays = [nowUTC];
+      const possibleMonthDays = possibleDays.map((dt) => ({
+        month: dt.month,
+        day: dt.day,
+      }));
 
-    const users = await UserModel.find({
-      $expr: {
-        $or: possibleMonthDays.map(({ month, day }) => ({
-          $and: [
-            { $eq: [{ $month: "$birthday" }, month] },
-            { $eq: [{ $dayOfMonth: "$birthday" }, day] },
-          ],
-        })),
-      },
-    });
+      const users = await UserModel.find({
+        $expr: {
+          $or: possibleMonthDays.map(({ month, day }) => ({
+            $and: [
+              { $eq: [{ $month: "$birthday" }, month] },
+              { $eq: [{ $dayOfMonth: "$birthday" }, day] },
+            ],
+          })),
+        },
+      });
 
-    for (const user of users) {
-      const userTime = nowUTC.setZone(user.timezone);
-      const birthday = DateTime.fromJSDate(user.birthday);
-      const isBirthday =
-        userTime.month === birthday.month && userTime.day === birthday.day;
-      const isNineAM = userTime.hour === 9 && userTime.minute === 0;
+      for (const user of users) {
+        const userTime = nowUTC.setZone(user.timezone);
+        const birthday = DateTime.fromJSDate(user.birthday);
+        const isBirthday =
+          userTime.month === birthday.month && userTime.day === birthday.day;
+        const isNineAM = userTime.hour === 9;
 
-      if (isBirthday && isNineAM) {
-        console.log(
-          `Happy Birthday to ${user.name} (${user.email})`
-        );
+        if (isBirthday && isNineAM) {
+          console.log(`Happy Birthday to ${user.name} (${user.email})`);
+        }
+      }
+      break;
+    } catch (err) {
+      console.error(`Attempt ${attempt} failed: ${err.message}`);
+      if (attempt === maxRetries) {
+        console.error(`Send message failed after ${maxRetries} attempts.`);
+      } else {
+        const delay = 3000;
+        await new Promise((res) => setTimeout(res, delay));
       }
     }
-  } catch (err) {
-    console.error("Error sending birthday messages:", err);
   }
+}
+
+module.exports = {
+  sendBirthdayMessage,
 };

@@ -65,12 +65,33 @@ describe("sendBirthdayMessage", () => {
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
-  it("should log an error if database query fails", async () => {
-    UserModel.find.mockRejectedValue(new Error("DB error"));
+  it("should retry on failure", async () => {
+    const now = DateTime.utc().set({ hour: 9 });
+    jest.spyOn(DateTime, "utc").mockReturnValue(now);
+
+    UserModel.find
+      .mockRejectedValueOnce(new Error("Database error"))
+      .mockResolvedValueOnce([]);
+
     await sendBirthdayMessage();
+
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error sending birthday messages:",
-      expect.any(Error)
+      expect.stringContaining("Attempt 1 failed")
     );
+    expect(UserModel.find).toHaveBeenCalledTimes(2);
+  });
+
+  it("should fail after max retries", async () => {
+    const now = DateTime.utc().set({ hour: 9 });
+    jest.spyOn(DateTime, "utc").mockReturnValue(now);
+
+    UserModel.find.mockRejectedValue(new Error("Persistent error"));
+
+    await sendBirthdayMessage();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Send message failed")
+    );
+    expect(UserModel.find).toHaveBeenCalledTimes(3);
   });
 });

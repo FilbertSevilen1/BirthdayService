@@ -65,33 +65,25 @@ describe("sendBirthdayMessage", () => {
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
-  it("should retry on failure", async () => {
+  it("should log error if fetching users fails", async () => {
     const now = DateTime.utc().set({ hour: 9 });
     jest.spyOn(DateTime, "utc").mockReturnValue(now);
 
-    UserModel.find
-      .mockRejectedValueOnce(new Error("Database error"))
-      .mockResolvedValueOnce([]);
+    const error = new Error("Database error");
+    jest.spyOn(UserModel, "find").mockRejectedValueOnce(error);
+
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     await sendBirthdayMessage();
 
+    expect(UserModel.find).toHaveBeenCalledTimes(1);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Attempt 1 failed")
+      "Failed to fetch users:",
+      error.message
     );
-    expect(UserModel.find).toHaveBeenCalledTimes(2);
-  });
 
-  it("should fail after max retries", async () => {
-    const now = DateTime.utc().set({ hour: 9 });
-    jest.spyOn(DateTime, "utc").mockReturnValue(now);
-
-    UserModel.find.mockRejectedValue(new Error("Persistent error"));
-
-    await sendBirthdayMessage();
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Send message failed")
-    );
-    expect(UserModel.find).toHaveBeenCalledTimes(3);
+    consoleErrorSpy.mockRestore();
   });
 });

@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
     birthday: {
       type: Date,
       required: true,
+      index: true,
     },
     timezone: {
       type: String,
